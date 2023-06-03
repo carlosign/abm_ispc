@@ -1,0 +1,14 @@
+LOGIN - POST http://localhost:8000/api/auth/login/
+
+{ "email": "carlos@ispc.com", "password": "carlos" }    // Admin
+{ "email": "usuarioNOADMIN@nosoyadmin.com", "password": "carlos123456" } //Usuario
+
+Con Postman, HEADER: X-CSRFToken  y usamos el token que nos da el metodo GET.
+Tambien podemos enviarlo en el body con csrfmiddlewaretoken
+
+
+LOGOUT - POST http://localhost:8000/api/auth/logout/
+
+PRODUCTOS - GET http://127.0.0.1:8000/api/productos/
+
+PERFIL - GET y Patch http://127.0.0.1:8000/api/user/profile/
