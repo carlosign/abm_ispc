@@ -7,7 +7,7 @@ class CustomUser(AbstractUser):
         max_length=150, unique=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'password']
-
+ 
 
 class Categoria(models.Model):
 
