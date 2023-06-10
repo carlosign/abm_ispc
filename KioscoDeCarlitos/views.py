@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 
 from django.contrib.auth import authenticate, login, logout
 from rest_framework import status, generics
@@ -100,7 +100,7 @@ class ProcessPaymentAPIView(APIView):
                 },
             }
 
-            sdk = mercadopago.SDK(str(settings.YOUR_ACCESS_TOKEN))
+            sdk = mercadopago.SDK("")
 
             payment_response = sdk.payment().create(payment_data)
 
@@ -114,3 +114,23 @@ class ProcessPaymentAPIView(APIView):
             return Response(data={"body": status, "statusCode": payment_response["status"]}, status=201)
         except Exception as e:
             return Response(data={"body": payment_response}, status=400)
+
+class retornarPagado(APIView):  # Retornar custom json 
+    def get(self, request):
+        return Response({"respuesta": "aprobado"})
+    
+
+#Return Custom json, reduzca el stock segun lo enviado.
+class customjsonybajarstock(APIView):
+    permission_classes = [IsAdminUser] #Solo permito admins.
+    def patch(self, request, pk, cantidad): #Utilizo patch para la modificacion parcial.
+        model = get_object_or_404(Producto, pk=pk) #Pido el objeto mandandole el ID. 
+        data = {"cantidad": model.cantidad - int(cantidad)} #Del json, le resto la cantidad.
+        serializer = ProductoSerializer(model, data=data, partial=True) #Paso la data al serializer.
+
+        if serializer.is_valid(): #Si es valido lo que mande
+            serializer.save() #Guardo el response (va a mandar el json del producto con la cantidad actualizada)
+            agregarcustomjson={"respuesta": "aprobado"}
+            agregarcustomjson.update(serializer.data)  #A ese json anterior, le agrego la respuesta de la transaccion.
+            return Response(agregarcustomjson)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import Categoria, Producto
 from django.contrib.auth.hashers import make_password
-
+from django.db import models
 
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
@@ -25,8 +25,10 @@ class CategoriaSerializer(serializers.ModelSerializer):
         #fields = ('nombre', 'descripcion')
 
 class ProductoSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Producto
         fields = '__all__'
         #fields = ('codigodeBarras',"nombre" ,'descripcion','peso','precio','cantidad')
+
 
