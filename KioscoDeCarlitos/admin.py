@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Categoria
+from .models import CarritoCompras, Categoria
 from .models import Producto
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
@@ -17,3 +17,4 @@ class CustomUserAdmin(UserAdmin):
 
 admin.site.register(Categoria,CategoriaAdmin)
 admin.site.register(Producto,ProductoAdmin)
+admin.site.register(CarritoCompras)

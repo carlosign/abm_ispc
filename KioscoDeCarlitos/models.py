@@ -29,7 +29,7 @@ class Producto(models.Model):
     descripcion = models.TextField(max_length=1000, blank=False)
     peso = models.DecimalField(max_length=10, blank=False, decimal_places=2, max_digits=10)
     precio = models.DecimalField(max_length=10, blank=False, decimal_places=2, max_digits=10)
-    cantidad = models.IntegerField(blank=False, default=0)
+    cantidad = models.PositiveIntegerField(blank=False, default=0)
     id_categoria = models.ForeignKey(Categoria,to_field="id_categoria",on_delete=models.CASCADE)
     class Meta:
         db_table = "Producto"
@@ -40,3 +40,7 @@ class Producto(models.Model):
     def __str__(self):
         return self.nombre   
     
+class CarritoCompras(models.Model):
+        producto_nombre = models.CharField(max_length=200)
+        producto_precio = models.DecimalField(max_length=10, blank=False, decimal_places=2, max_digits=10)
+        producto_cantidad = models.PositiveIntegerField()

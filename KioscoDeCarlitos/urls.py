@@ -1,7 +1,7 @@
 
 from django import urls
 from django.urls import path, include, re_path
-from .views import LoginView, LogoutView, SignupView, ProfileView, ListarUsuarios, agregarProducto, customjsonybajarstock, retornarPagado
+from .views import CarritoComprasVista, LoginView, LogoutView, SignupView, ProfileView, ListarUsuarios, agregarProducto, customjsonybajarstock, retornarPagado
 
 
 urlpatterns = [
@@ -24,6 +24,7 @@ urlpatterns = [
          agregarProducto.as_view(), name='agregar_producto'),
     path('retornarPagado/',
          retornarPagado.as_view(), name='retornarPagado'),
-     path('actualizarstock/<int:pk>/<int:cantidad>', customjsonybajarstock.as_view(), name='customjsonybajarstock'),
-
+     path('actualizarstock/<int:pk>/<int:cantidad>', customjsonybajarstock.as_view(), name='customjsonybajarstock'), #
+    path('carrito/',
+         CarritoComprasVista.as_view(), name='carritodecompras'),
 ]

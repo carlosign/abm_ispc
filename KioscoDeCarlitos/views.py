@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import UserSerializer
+from .serializers import CarritoCompraSerializer, UserSerializer
 from .models import Categoria, Producto, CustomUser
 from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
 from .serializers import ProductoSerializer
@@ -37,9 +37,9 @@ class LogoutView(APIView):
     def post(self, request):
         # Borramos de la request la información de sesión
         logout(request)
-
         # Devolvemos la respuesta al cliente
         return Response(status=status.HTTP_200_OK)
+    
 class SignupView(generics.CreateAPIView):
     serializer_class = UserSerializer
 
@@ -70,6 +70,13 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         if self.request.user.is_authenticated:
             return self.request.user
+    def patch_object(self,request):
+        serializer = UserSerializer(data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class ListarUsuarios(generics.ListCreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
@@ -122,7 +129,8 @@ class retornarPagado(APIView):  # Retornar custom json
 
 #Return Custom json, reduzca el stock segun lo enviado.
 class customjsonybajarstock(APIView):
-    permission_classes = [IsAdminUser] #Solo permito admins.
+    #permission_classes = [IsAdminUser] #Solo permito admins.
+    permission_classes = [AllowAny] 
     def patch(self, request, pk, cantidad): #Utilizo patch para la modificacion parcial.
         model = get_object_or_404(Producto, pk=pk) #Pido el objeto mandandole el ID. 
         data = {"cantidad": model.cantidad - int(cantidad)} #Del json, le resto la cantidad.
@@ -134,3 +142,13 @@ class customjsonybajarstock(APIView):
             agregarcustomjson.update(serializer.data)  #A ese json anterior, le agrego la respuesta de la transaccion.
             return Response(agregarcustomjson)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CarritoComprasVista(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        serializer = CarritoCompraSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"estado": "correcto", "data": serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({"estado": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
