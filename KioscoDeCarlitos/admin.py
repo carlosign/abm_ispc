@@ -15,6 +15,7 @@ class ProductoAdmin(admin.ModelAdmin):
 class CustomUserAdmin(UserAdmin):
     pass
 
+
 admin.site.register(Categoria,CategoriaAdmin)
 admin.site.register(Producto,ProductoAdmin)
 admin.site.register(CarritoCompras)

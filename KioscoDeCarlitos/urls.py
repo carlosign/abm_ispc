@@ -1,7 +1,7 @@
 
 from django import urls
 from django.urls import path, include, re_path
-from .views import CarritoComprasVista, LoginView, LogoutView, SignupView, ProfileView, ListarUsuarios, agregarProducto, customjsonybajarstock, retornarPagado
+from .views import ActualizarCarrito, ActualizarProductoenCarrito, CarritoComprasVista, CrearCarrito, CrearProductosCarrito, DetalleCarrito, DetalleProductosCarrito, EliminarCarrito, EliminarItemEnCarrito, ListaCarritos, ListarProductosEnCarrito, LoginView, LogoutView, SignupView, ProfileView, ListarUsuarios, agregarProducto, customjsonybajarstock, retornarPagado
 
 
 urlpatterns = [
@@ -25,6 +25,16 @@ urlpatterns = [
     path('retornarPagado/',
          retornarPagado.as_view(), name='retornarPagado'),
      path('actualizarstock/<int:pk>/<int:cantidad>', customjsonybajarstock.as_view(), name='customjsonybajarstock'), #
-    path('carrito/',
+    path('carrito2/',
          CarritoComprasVista.as_view(), name='carritodecompras'),
+    path('carrito/', ListaCarritos, name='listarcarritos'),
+    path('carrito/<int:pk>/', DetalleCarrito.as_view(), name='detallecarrito'),
+    path('carrito/crear/', CrearCarrito.as_view(), name='crearcarrito'),
+    path('carrito/<int:pk>/actualizar/', ActualizarCarrito.as_view(), name='actualizarcarrito'),
+    path('carrito/<int:pk>/eliminar/', EliminarCarrito.as_view(), name='eliminarcarrito'),
+    path('carritoProductos/', ListarProductosEnCarrito.as_view(), name='listarproductoencarrito'),
+    path('carritoProductos/<int:pk>/', DetalleProductosCarrito.as_view(), name='detalleproductoencarrito'),
+    path('carritoProductos/crear/', CrearProductosCarrito.as_view(), name='crearproductoencarrito'),
+    path('carritoProductos/<int:pk>/actualizar/', ActualizarProductoenCarrito.as_view(), name='actualizarproductoencarrito'),
+    path('carritoProductos/<int:pk>/eliminar/', EliminarItemEnCarrito.as_view(), name='eliminarproductodelcarrito'),
 ]

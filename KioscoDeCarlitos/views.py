@@ -5,13 +5,14 @@ from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import CarritoCompraSerializer, UserSerializer
-from .models import Categoria, Producto, CustomUser
+from .models import Carrito, CarritoCompras, Categoria, Producto, CustomUser, ProductosenCarrito
 from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
 from .serializers import ProductoSerializer
 from .serializers import CategoriaSerializer
 from rest_framework import viewsets
 import mercadopago
 import json
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 
 
 class LoginView(APIView):
@@ -131,7 +132,7 @@ class retornarPagado(APIView):  # Retornar custom json
 class customjsonybajarstock(APIView):
     #permission_classes = [IsAdminUser] #Solo permito admins.
     permission_classes = [AllowAny] 
-    def patch(self, request, pk, cantidad): #Utilizo patch para la modificacion parcial.
+    def patch(self, request, pk, cantidad,*args, **kwargs): #Utilizo patch para la modificacion parcial.
         model = get_object_or_404(Producto, pk=pk) #Pido el objeto mandandole el ID. 
         data = {"cantidad": model.cantidad - int(cantidad)} #Del json, le resto la cantidad.
         serializer = ProductoSerializer(model, data=data, partial=True) #Paso la data al serializer.
@@ -152,3 +153,44 @@ class CarritoComprasVista(APIView):
             return Response({"estado": "correcto", "data": serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response({"estado": "error", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        
+#Carrito de compras completo desde Django
+class DetalleCarrito(DetailView):
+    model = Carrito
+  
+
+class ListaCarritos(ListView):
+    model = Carrito
+    context_object_name = 'carritos'
+
+
+class CrearCarrito(CreateView):
+    model = Carrito
+
+
+class ActualizarCarrito(UpdateView):
+    model = Carrito
+
+
+class EliminarCarrito(DeleteView):
+    model = Carrito
+
+class DetalleProductosCarrito(DetailView):
+    model = ProductosenCarrito
+
+
+class ListarProductosEnCarrito(ListView):
+    model = ProductosenCarrito
+    context_object_name = 'Productos en Carrito'
+
+
+class CrearProductosCarrito(CreateView):
+    model = ProductosenCarrito
+
+
+class ActualizarProductoenCarrito(UpdateView):
+    model = ProductosenCarrito
+
+
+class EliminarItemEnCarrito(DeleteView):
+    model = ProductosenCarrito
